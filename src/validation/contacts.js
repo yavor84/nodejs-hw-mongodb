@@ -2,11 +2,9 @@ import Joi from 'joi';
 
 export const createContactSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
-    'string.base': '"name" must be a string',
     'string.empty': '"name" is required',
     'string.min': '"name" should be at least {#limit} characters long',
     'string.max': '"name" should be at most {#limit} characters long',
-    'any.required': '"name" is required',
   }),
   phoneNumber: Joi.string()
     .required()
@@ -15,7 +13,6 @@ export const createContactSchema = Joi.object({
       'string.pattern.base':
         '"phoneNumber" must match the format +380XXXXXXXXX',
       'string.empty': '"phoneNumber" is required',
-      'any.required': '"phoneNumber" is required',
     }),
   email: Joi.string().email().messages({
     'string.email': '"email" must be a valid email address',
