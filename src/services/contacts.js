@@ -1,17 +1,20 @@
 import { Contact } from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
+// Всі контакти
+
 export const getAllContacts = async ({
   page,
   perPage,
   sortOrder,
   sortBy,
   filter,
+  userId,
 }) => {
   const limit = perPage;
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
-  const contactsQuery = Contact.find();
+  const contactsQuery = Contact.find({ userId });
 
   if (typeof filter.type !== 'undefined') {
     contactsQuery.where('contactType').equals(filter.type);
@@ -22,7 +25,7 @@ export const getAllContacts = async ({
   }
 
   const [contactsCount, contacts] = await Promise.all([
-    Contact.find().merge(contactsQuery).countDocuments(),
+    Contact.find({ userId }).merge(contactsQuery).countDocuments(),
     contactsQuery
       .skip(skip)
       .limit(limit)
@@ -37,21 +40,31 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await Contact.findById(contactId);
+// Пошук одного
+
+export const getContactById = async (contactId, userId) => {
+  const contact = await Contact.findOne({ _id: contactId, userId });
   return contact;
 };
 
-export const createContact = async (payload) => {
-  const contact = await Contact.create(payload);
+// Створення
+
+export const createContact = async (payload, userId) => {
+  const contact = await Contact.create({ ...payload, userId });
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await Contact.findOneAndDelete({ _id: contactId });
+// Видалення
+
+export const deleteContact = async (contactId, userId) => {
+  const contact = await Contact.findOneAndDelete({ _id: contactId, userId });
   return contact;
 };
 
-export const patchContact = async (contactId, payload) => {
-  return Contact.findByIdAndUpdate(contactId, payload, { new: true });
+// Оновлення
+
+export const patchContact = async (contactId, payload, userId) => {
+  return Contact.findOneAndUpdate({ _id: contactId, userId }, payload, {
+    new: true,
+  });
 };
