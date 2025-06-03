@@ -12,19 +12,19 @@ import { loginUserSchema, registerUserSchema } from '../validation/auth.js';
 const router = Router();
 
 router.post(
-  '/register',
+  '/auth/register',
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
 
 router.post(
-  '/login',
+  '/auth/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-router.post('/logout', ctrlWrapper(logoutUserController));
+router.post('/auth/logout', ctrlWrapper(logoutUserController));
 
-router.post('/refresh', ctrlWrapper(refreshUserSessionController));
+router.post('/auth/refresh', ctrlWrapper(refreshUserSessionController));
 
 export default router;
