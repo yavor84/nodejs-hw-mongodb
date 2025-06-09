@@ -1,5 +1,6 @@
 import { Contact } from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 // Всі контакти
 
@@ -49,8 +50,12 @@ export const getContactById = async (contactId, userId) => {
 
 // Створення
 
-export const createContact = async (payload, userId) => {
-  const contact = await Contact.create({ ...payload, userId });
+export const createContact = async (payload, userId, file) => {
+  let photoUrl = null;
+  if (file) {
+    photoUrl = await saveFileToCloudinary(file);
+  }
+  const contact = await Contact.create({ ...payload, userId, photo: photoUrl });
   return contact;
 };
 
@@ -63,8 +68,24 @@ export const deleteContact = async (contactId, userId) => {
 
 // Оновлення
 
-export const patchContact = async (contactId, payload, userId) => {
-  return Contact.findOneAndUpdate({ _id: contactId, userId }, payload, {
-    new: true,
-  });
+export const patchContact = async (contactId, payload, userId, file) => {
+  const contactExists = await Contact.findOne({ _id: contactId, userId });
+
+  if (!contactExists) {
+    return null;
+  }
+  const updateData = { ...payload };
+
+  if (file) {
+    const photoUrl = await saveFileToCloudinary(file);
+    updateData.photo = photoUrl;
+  }
+  const updatedContact = await Contact.findOneAndUpdate(
+    { _id: contactId, userId },
+    updateData,
+    {
+      new: true,
+    },
+  );
+  return updatedContact;
 };
