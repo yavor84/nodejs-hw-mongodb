@@ -22,6 +22,7 @@ properties:
     example: '+380634567890'
   email:
     type: string
+    format: email
     description: Contact's email
     example: johndoe@gmail.com
   isFavourite:
@@ -40,7 +41,8 @@ properties:
     example: 683da0d34d36640174e53e88
   photo:
     type: string
-    description: Contact's photo
+    format: url
+    description: Contact's photo url
     example: https://res.cloudinary.com/dd4zqerav/image/upload/v1749507846/acuh10nsffzmb23uy61s.jpg
   createdAt:
     type: string
