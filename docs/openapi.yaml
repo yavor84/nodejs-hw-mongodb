@@ -12,7 +12,7 @@ tags:
   - name: Auth
     description: Auth operations
 servers:
-  - url: http://127.0.0.1:3000
+  - url: https://contacts-zj1p.onrender.com
 paths:
   /contacts:
     post:
